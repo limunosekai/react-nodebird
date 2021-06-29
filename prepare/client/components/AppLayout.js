@@ -1,27 +1,66 @@
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
+import { Menu, Input, Row, Col } from 'antd';
+import UserProfile from './UserProfile';
+import LoginForm from './LoginForm';
+import styled from 'styled-components';
+
+const { Search } = Input;
+
+// 이미 만들어진 컴포넌트에 styled를 입힐 경우
+const SearchInput = styled(Search)`
+  vertical-align: middle;
+`;
 
 const AppLayout = ({ children }) => {
+  const [isLoggedin, setIsLoggedin] = useState(false);
+
   return (
     <div>
-      <div>
-        {/* Link에 href 적고 a 태그 적는다 */}
-        <Link href='/'>
-          <a>노드버드</a>
-        </Link>
-        <Link href='/profile'>
-          <a>프로필</a>
-        </Link>
-        <Link href='/signup'>
-          <a>회원가입</a>
-        </Link>
-      </div>
-      {children}
+      <Menu mode='horizontal'>
+        <Menu.Item key='1'>
+          {/* Link에 href 적고 a 태그 적는다 */}
+          <Link href='/'>
+            <a>노드버드</a>
+          </Link>
+        </Menu.Item>
+        <Menu.Item key='2'>
+          <Link href='/profile'>
+            <a>프로필</a>
+          </Link>
+        </Menu.Item>
+        <Menu.Item key='3'>
+          <SearchInput enterButton />
+        </Menu.Item>
+        <Menu.Item key='4'>
+          <Link href='/signup'>
+            <a>회원가입</a>
+          </Link>
+        </Menu.Item>
+      </Menu>
+      <Row gutter={[16, 16]}>
+        <Col xs={24} md={6}>
+          {isLoggedin ? (
+            <UserProfile setIsLoggedin={setIsLoggedin} />
+          ) : (
+            <LoginForm setIsLoggedin={setIsLoggedin} />
+          )}
+        </Col>
+        <Col xs={24} md={12}>
+          {children}
+        </Col>
+        <Col xs={24} md={6}>
+          <a href='#' target='_blank' rel='noreferrer noopener'>
+            Made by limunosekai
+          </a>
+        </Col>
+      </Row>
     </div>
   );
 };
 
-AppLayout.PropTypes = {
+AppLayout.propTypes = {
   children: PropTypes.node.isRequired,
 };
 

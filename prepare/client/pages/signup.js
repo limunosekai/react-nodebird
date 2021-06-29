@@ -1,5 +1,14 @@
+import Head from 'next/head';
+
 const Signup = () => {
-  return <div>회원가입</div>;
+  return (
+    <>
+      <Head>
+        <title>회원가입</title>
+      </Head>
+      회원가입
+    </>
+  );
 };
 
 export default Signup;

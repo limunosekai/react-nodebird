@@ -1,5 +1,14 @@
+import Head from 'next/head';
+
 const Profile = () => {
-  return <div>프로필</div>;
+  return (
+    <>
+      <Head>
+        <title>프로필</title>
+      </Head>
+      프로필
+    </>
+  );
 };
 
 export default Profile;
