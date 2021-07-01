@@ -8,7 +8,7 @@ export const initialState = {
         id: 1,
         nickname: '임성',
       },
-      content: '첫 번째 게시글',
+      content: '첫 번째 게시글 #해시태그 #리무',
       Images: [
         {
           src: 'https://res.cloudinary.com/limu/image/upload/v1624428744/portfolio/quiz_rb2z18.png',
