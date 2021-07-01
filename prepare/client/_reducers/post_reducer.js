@@ -1,11 +1,64 @@
 import * as actions from '../_actions/types';
 
 export const initialState = {
-  mainPosts: [],
+  mainPosts: [
+    {
+      id: 1,
+      User: {
+        id: 1,
+        nickname: '임성',
+      },
+      content: '첫 번째 게시글',
+      Images: [
+        {
+          src: 'https://res.cloudinary.com/limu/image/upload/v1624428744/portfolio/quiz_rb2z18.png',
+        },
+        {
+          src: 'https://res.cloudinary.com/limu/image/upload/v1624346227/portfolio/dark_l5msvo.png',
+        },
+        {
+          src: 'https://res.cloudinary.com/limu/image/upload/v1623320474/portfolio/sidebar_er45zx.png',
+        },
+      ],
+      Comments: [
+        {
+          User: {
+            nickname: 'hero',
+          },
+          content: '하이루~',
+        },
+        {
+          User: {
+            nickname: '멸망',
+          },
+          content: '멸망이다~',
+        },
+      ],
+    },
+  ],
+  imagePaths: [],
+  postAdded: false,
+};
+
+const dummyPost = {
+  id: 2,
+  content: '더미데이터',
+  User: {
+    id: 1,
+    nickname: '임성',
+  },
+  Images: [],
+  Comments: [],
 };
 
 const post_reducer = (state = initialState, action) => {
   switch (action.type) {
+    case actions.ADD_POST:
+      return {
+        ...state,
+        mainPosts: [dummyPost, ...state.mainPosts],
+        postAdded: true,
+      };
     default:
       return state;
   }
