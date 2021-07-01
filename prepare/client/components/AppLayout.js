@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Menu, Input, Row, Col } from 'antd';
 import UserProfile from './UserProfile';
 import LoginForm from './LoginForm';
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 
 const { Search } = Input;
 
@@ -12,12 +12,27 @@ const { Search } = Input;
 const SearchInput = styled(Search)`
   vertical-align: middle;
 `;
+const Global = createGlobalStyle`
+  .ant-row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .ant-col:first-child {
+    padding-left: 0 !important;
+  }
+
+  .ant-col:last-child {
+    padding-right: 0 !important;
+  }
+`;
 
 const AppLayout = ({ children }) => {
   const { isLoggedIn } = useSelector((state) => state.user);
 
   return (
     <div>
+      <Global />
       <Menu mode='horizontal'>
         <Menu.Item key='1'>
           {/* Link에 href 적고 a 태그 적는다 */}
