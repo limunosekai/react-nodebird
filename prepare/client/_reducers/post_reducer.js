@@ -20,6 +20,7 @@ export const initialState = {
           src: 'https://res.cloudinary.com/limu/image/upload/v1623320474/portfolio/sidebar_er45zx.png',
         },
       ],
+      createdAt: {},
       Comments: [
         {
           User: {

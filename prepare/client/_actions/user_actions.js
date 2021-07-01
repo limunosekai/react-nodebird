@@ -1,12 +1,9 @@
 import * as actions from './types';
 
-export function loginAction({ id, password }) {
+export function loginAction(data) {
   return {
     type: actions.LOGIN,
-    payload: {
-      id,
-      password,
-    },
+    payload: data,
   };
 }
 

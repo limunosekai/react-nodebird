@@ -2,7 +2,7 @@ import * as actions from '../_actions/types';
 
 export const initialState = {
   isLoggedIn: false,
-  user: null,
+  me: null,
   signupData: {},
   loginData: {},
 };
@@ -13,13 +13,13 @@ const user_reducer = (state = initialState, action) => {
       return {
         ...state,
         isLoggedIn: true,
-        user: { ...action.payload },
+        me: action.payload,
       };
     case actions.LOGOUT:
       return {
         ...state,
         isLoggedIn: false,
-        user: null,
+        me: null,
       };
     default:
       return state;
