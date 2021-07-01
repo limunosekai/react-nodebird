@@ -1,4 +1,4 @@
-import { Card, Popover, Button, Space, Avatar } from 'antd';
+import { Card, Popover, Button, Space, Avatar, List, Comment } from 'antd';
 import {
   RetweetOutlined,
   HeartOutlined,
@@ -6,10 +6,11 @@ import {
   EllipsisOutlined,
   HeartTwoTone,
 } from '@ant-design/icons';
+import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import PostImages from './PostImages';
-import { useCallback, useState } from 'react';
+import CommentForm from './CommentForm';
 
 const { Meta } = Card;
 
@@ -72,9 +73,25 @@ const PostCard = ({ post }) => {
           avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
         />
       </Card>
-      {commentFormOpened && <div>MMMMM</div>}
-      {/* <CommentForm /> */}
-      {/* <Comments /> */}
+      {commentFormOpened && (
+        <div>
+          <CommentForm post={post} />
+          <List
+            header={`${post.Comments.length}개의 댓글`}
+            itemLayout='horizontal'
+            dataSource={post.Comments}
+            renderItem={(item) => (
+              <li>
+                <Comment
+                  author={item.User.nickname}
+                  avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
+                  content={item.content}
+                />
+              </li>
+            )}
+          />
+        </div>
+      )}
     </div>
   );
 };
