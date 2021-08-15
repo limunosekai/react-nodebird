@@ -1,9 +1,11 @@
 import * as actions from '../_actions/types';
+import shortId from 'shortid';
+import produce from 'immer';
 
 export const initialState = {
   mainPosts: [
     {
-      id: 1,
+      id: shortId.generate(),
       User: {
         id: 1,
         nickname: '임성',
@@ -11,25 +13,32 @@ export const initialState = {
       content: '첫 번째 게시글 #해시태그 #리무',
       Images: [
         {
+          id: shortId.generate(),
           src: 'https://res.cloudinary.com/limu/image/upload/v1624428744/portfolio/quiz_rb2z18.png',
         },
         {
+          id: shortId.generate(),
           src: 'https://res.cloudinary.com/limu/image/upload/v1624346227/portfolio/dark_l5msvo.png',
         },
         {
+          id: shortId.generate(),
           src: 'https://res.cloudinary.com/limu/image/upload/v1623320474/portfolio/sidebar_er45zx.png',
         },
       ],
       createdAt: {},
       Comments: [
         {
+          id: shortId.generate(),
           User: {
+            id: shortId.generate(),
             nickname: 'hero',
           },
           content: '하이루~',
         },
         {
+          id: shortId.generate(),
           User: {
+            id: shortId.generate(),
             nickname: '멸망',
           },
           content: '멸망이다~',
@@ -38,87 +47,87 @@ export const initialState = {
     },
   ],
   imagePaths: [],
-  comments: [],
   postAdded: false,
   isAddingPost: false,
   isAddingPostError: null,
+  postRemoved: false,
+  isRemovingPost: false,
+  isRemovingPostError: null,
   commentAdded: false,
   isAddingComment: false,
   isAddingCommentError: null,
 };
 
-const dummyPost = {
-  id: 2,
-  content: '더미데이터',
+const dummyPost = (data) => ({
+  id: data.id,
+  content: data.content,
   User: {
     id: 1,
     nickname: '임성',
   },
   Images: [],
   Comments: [],
-};
+});
 
-const dummyComment = {
-  id: 1,
-  content: '더미데이터',
+const dummyComment = (text) => ({
+  id: shortId.generate(),
+  content: text,
   User: {
     id: 1,
     nickname: '임성',
   },
-  Images: [],
-  Comments: [],
-};
+});
 
 const post_reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case actions.ADD_POST_REQUEST:
-      return {
-        ...state,
-        isAddingPost: true,
-        postAdded: false,
-        isAddingPostError: null,
-      };
-
-    case actions.ADD_POST_SUCCESS:
-      return {
-        ...state,
-        mainPosts: [dummyPost, ...state.mainPosts],
-        postAdded: true,
-        isAddingPost: false,
-      };
-
-    case actions.ADD_POST_FAILURE:
-      return {
-        ...state,
-        isAddingPost: false,
-        isAddingPostError: action.error,
-      };
-
-    case actions.ADD_COMMENT_REQUEST:
-      return {
-        ...state,
-        commentAdded: false,
-        isAddingComment: true,
-        isAddingCommentError: null,
-      };
-
-    case actions.ADD_COMMENT_SUCCESS:
-      return {
-        ...state,
-        comments: [dummyComment, ...state.comments],
-        commentAdded: true,
-        isAddingComment: false,
-      };
-
-    case actions.ADD_COMMENT_FAILURE:
-      return {
-        ...state,
-        isAddingComment: false,
-        isAddingCommentError: action.error,
-      };
-    default:
-      return state;
-  }
+  return produce(state, (draft) => {
+    switch (action.type) {
+      case actions.ADD_POST_REQUEST:
+        draft.isAddingPost = true;
+        draft.postAdded = false;
+        draft.isAddingPostError = null;
+        break;
+      case actions.ADD_POST_SUCCESS:
+        draft.mainPosts.unshift(dummyPost(action.data));
+        draft.postAdded = true;
+        draft.isAddingPost = false;
+        break;
+      case actions.ADD_POST_FAILURE:
+        draft.isAddingPost = false;
+        draft.isAddingPostError = action.error;
+        break;
+      case actions.REMOVE_POST_REQUEST:
+        draft.isRemovingPost = true;
+        draft.postRemoved = false;
+        draft.isRemovingPostError = null;
+        break;
+      case actions.REMOVE_POST_SUCCESS:
+        draft.mainPosts = draft.mainPosts.filter((i) => i.id !== action.data);
+        draft.postRemoved = true;
+        draft.isRemovingPost = false;
+        break;
+      case actions.REMOVE_POST_FAILURE:
+        draft.isRemovingPost = false;
+        draft.isRemovingPostError = action.error;
+        break;
+      case actions.ADD_COMMENT_REQUEST:
+        draft.commentAdded = false;
+        draft.isAddingComment = true;
+        draft.isAddingCommentError = null;
+        break;
+      case actions.ADD_COMMENT_SUCCESS:
+        draft.commentAdded = true;
+        draft.isAddingComment = false;
+        const post = draft.mainPosts.find((i) => i.id === action.data.postId);
+        post.Comments.unshift(dummyComment(action.data.content));
+        break;
+      case actions.ADD_COMMENT_FAILURE:
+        draft.isAddingComment = false;
+        draft.isAddingCommentError = action.error;
+        break;
+      default:
+        break;
+    }
+  });
 };
 
 export default post_reducer;

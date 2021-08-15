@@ -13,3 +13,10 @@ export function addCommentReqeust(data) {
     payload: data,
   };
 }
+
+export function removePostRequest(data) {
+  return {
+    type: actions.REMOVE_POST_REQUEST,
+    payload: data,
+  };
+}

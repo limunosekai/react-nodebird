@@ -7,19 +7,22 @@ import {
   HeartTwoTone,
 } from '@ant-design/icons';
 import { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import PostImages from './PostImages';
 import CommentForm from './CommentForm';
 import PostCardContent from './PostCardContent';
+import { removePostRequest } from '../_actions/post_actions';
 
 const { Meta } = Card;
 
 const PostCard = ({ post }) => {
+  const dispatch = useDispatch();
   const [liked, setLiked] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
 
   const { me } = useSelector((state) => state.user);
+  const { isRemovingPost } = useSelector((state) => state.post);
   // 옵셔널 체이닝 me.id가 없으면 undefined
   const id = me?.id;
 
@@ -29,6 +32,10 @@ const PostCard = ({ post }) => {
 
   const onToggleComment = useCallback(() => {
     setCommentFormOpened((prev) => !prev);
+  }, []);
+
+  const onRemovePost = useCallback(() => {
+    dispatch(removePostRequest(post.id));
   }, []);
 
   return (
@@ -56,7 +63,13 @@ const PostCard = ({ post }) => {
                 {id && +post.User.id === +id ? (
                   <>
                     <Button>수정</Button>
-                    <Button type='danger'>삭제</Button>
+                    <Button
+                      type='danger'
+                      loading={isRemovingPost}
+                      onClick={onRemovePost}
+                    >
+                      삭제
+                    </Button>
                   </>
                 ) : (
                   <Button>신고</Button>
@@ -100,7 +113,7 @@ const PostCard = ({ post }) => {
 PostCard.propTypes = {
   // shape로 object 더 상세히 적는게 좋다
   post: PropTypes.shape({
-    id: PropTypes.number,
+    id: PropTypes.string,
     User: PropTypes.object,
     content: PropTypes.string,
     createdAt: PropTypes.object,

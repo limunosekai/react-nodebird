@@ -9,7 +9,7 @@ const { TextArea } = Input;
 const CommentForm = ({ post }) => {
   const dispatch = useDispatch();
   const id = useSelector((state) => state.me?.id);
-  const { commentAdded } = useSelector((state) => state.post);
+  const { commentAdded, isAddingComment } = useSelector((state) => state.post);
   const [commentText, setCommentText] = useState('');
 
   useEffect(() => {
@@ -24,9 +24,7 @@ const CommentForm = ({ post }) => {
 
   const onSubmitComment = useCallback(() => {
     dispatch(
-      addCommentReqeust({
-        data: { content: commentText, postId: post.id, userId: id },
-      })
+      addCommentReqeust({ content: commentText, postId: post.id, userId: id })
     );
   }, [commentText, id]);
 
@@ -35,9 +33,10 @@ const CommentForm = ({ post }) => {
       <Form.Item style={{ position: 'relative', margin: 0 }}>
         <TextArea value={commentText} rows={4} onChange={onChangeCommentText} />
         <Button
-          style={{ position: 'absolute', right: 0, bottom: '-40px' }}
+          style={{ position: 'absolute', right: 0, bottom: '-40px', zIndex: 1 }}
           type='primary'
           htmlType='submit'
+          loading={isAddingComment}
         >
           등록
         </Button>

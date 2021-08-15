@@ -65,6 +65,27 @@ function* signUp(action) {
   }
 }
 
+function changeNicknameAPI() {
+  return axios.post('/api/logout');
+}
+
+function* changeNickname(action) {
+  try {
+    // const result = yield call(signUpAPI);
+    yield delay(1000);
+    yield put({
+      type: actions.CHANGE_NICKNAME_SUCCESS,
+      // data: result.data,
+      data: action.payload,
+    });
+  } catch (err) {
+    yield put({
+      type: actions.CHANGE_NICKNAME_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function* watchLogin() {
   yield takeLatest(actions.LOGIN_REQUEST, login);
 }
@@ -77,6 +98,15 @@ function* watchSignUp() {
   yield takeLatest(actions.SIGNUP_REQUEST, signUp);
 }
 
+function* watchChangeNickname() {
+  yield takeLatest(actions.SIGNUP_REQUEST, changeNickname);
+}
+
 export default function* userSaga() {
-  yield all([fork(watchLogin), fork(watchLogout), fork(watchSignUp)]);
+  yield all([
+    fork(watchLogin),
+    fork(watchLogout),
+    fork(watchSignUp),
+    fork(watchChangeNickname),
+  ]);
 }
