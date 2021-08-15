@@ -4,13 +4,17 @@ import { Form, Input, Checkbox, Button } from 'antd';
 import { useCallback, useState } from 'react';
 import useInput from '../utils/useInput';
 import styled from 'styled-components';
+import { signUpRequestAction } from '../_actions/user_actions';
+import { useDispatch, useSelector } from 'react-redux';
 
 const ErrorMessage = styled.div`
   color: red;
 `;
 
 const Signup = () => {
-  const [id, onChangeId] = useInput('');
+  const dispatch = useDispatch();
+  const { isSigningUp } = useSelector((state) => state.user);
+  const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
   const [password, onChangePassword] = useInput('');
   const [passwordCheck, setPasswordCheck] = useState('');
@@ -38,8 +42,7 @@ const Signup = () => {
     if (!term) {
       return setTermError(true);
     }
-
-    console.log(id, nickname, password);
+    dispatch(signUpRequestAction({ data: { email, password, nickname } }));
   }, [password, passwordCheck, term]);
 
   return (
@@ -49,9 +52,15 @@ const Signup = () => {
       </Head>
       <Form onFinish={onSubmit}>
         <div>
-          <label htmlFor='user-id'>아이디</label>
+          <label htmlFor='user-email'>이메일</label>
           <br />
-          <Input name='user-id' value={id} required onChange={onChangeId} />
+          <Input
+            name='user-email'
+            value={email}
+            type='email'
+            required
+            onChange={onChangeEmail}
+          />
         </div>
         <div>
           <label htmlFor='user-nick'>닉네임</label>
@@ -95,7 +104,12 @@ const Signup = () => {
           {termError && <ErrorMessage>약관에 동의해주세요.</ErrorMessage>}
         </div>
         <div style={{ marginTop: '10px' }}>
-          <Button type='primary' htmlFor='submit' onClick={onSubmit}>
+          <Button
+            type='primary'
+            htmlType='submit'
+            onClick={onSubmit}
+            loading={isSigningUp}
+          >
             가입하기
           </Button>
         </div>

@@ -1,22 +1,28 @@
 import { Form, Input, Button } from 'antd';
-import { useCallback, useState, useRef } from 'react';
+import { useCallback, useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addPost } from '../_actions/post_actions';
+import { addPostReqeust } from '../_actions/post_actions';
 
 const { TextArea } = Input;
 
 const PostForm = () => {
   const dispatch = useDispatch();
-
-  const { imagePaths } = useSelector((state) => state.post);
+  const { imagePaths, isAddingPost, postAdded } = useSelector(
+    (state) => state.post
+  );
   const [text, setText] = useState('');
 
   const imageInput = useRef();
 
+  useEffect(() => {
+    if (postAdded) {
+      setText('');
+    }
+  }, [postAdded]);
+
   const onSubmit = useCallback(() => {
-    dispatch(addPost());
-    setText('');
-  }, []);
+    dispatch(addPostReqeust(text));
+  }, [text]);
 
   const onChangeText = useCallback((e) => {
     setText(e.target.value);
@@ -41,7 +47,12 @@ const PostForm = () => {
       <div>
         <input type='file' multiple hidden ref={imageInput} />
         <Button onClick={onClickImageUpload}>이미지 업로드</Button>
-        <Button type='primary' style={{ float: 'right' }} htmlType='submit'>
+        <Button
+          type='primary'
+          style={{ float: 'right' }}
+          htmlType='submit'
+          loading={isAddingPost}
+        >
           등록
         </Button>
       </div>

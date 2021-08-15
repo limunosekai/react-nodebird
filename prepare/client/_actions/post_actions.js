@@ -1,7 +1,15 @@
 import * as actions from './types';
 
-export function addPost() {
+export function addPostReqeust(data) {
   return {
-    type: actions.ADD_POST,
+    type: actions.ADD_POST_REQUEST,
+    payload: data,
+  };
+}
+
+export function addCommentReqeust(data) {
+  return {
+    type: actions.ADD_COMMENT_REQUEST,
+    payload: data,
   };
 }

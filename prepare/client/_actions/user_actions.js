@@ -1,14 +1,21 @@
 import * as actions from './types';
 
-export function loginAction(data) {
+export function loginRequestAction(data) {
   return {
-    type: actions.LOGIN,
+    type: actions.LOGIN_REQUEST,
     payload: data,
   };
 }
 
-export function logoutAction() {
+export function logoutRequestAction() {
   return {
-    type: actions.LOGOUT,
+    type: actions.LOGOUT_REQUEST,
+  };
+}
+
+export function signUpRequestAction(data) {
+  return {
+    type: actions.SIGNUP_REQUEST,
+    payload: data,
   };
 }
