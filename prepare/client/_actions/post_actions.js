@@ -7,6 +7,12 @@ export function addPostReqeust(data) {
   };
 }
 
+export function loadPostsReqeust() {
+  return {
+    type: actions.LOAD_POSTS_REQUEST,
+  };
+}
+
 export function addCommentReqeust(data) {
   return {
     type: actions.ADD_COMMENT_REQUEST,

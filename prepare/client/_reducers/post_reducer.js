@@ -4,50 +4,12 @@ import produce from 'immer';
 import faker from 'faker';
 
 export const initialState = {
-  mainPosts: [
-    {
-      id: shortId.generate(),
-      User: {
-        id: 1,
-        nickname: '임성',
-      },
-      content: '첫 번째 게시글 #해시태그 #리무',
-      Images: [
-        {
-          id: shortId.generate(),
-          src: 'https://res.cloudinary.com/limu/image/upload/v1624428744/portfolio/quiz_rb2z18.png',
-        },
-        {
-          id: shortId.generate(),
-          src: 'https://res.cloudinary.com/limu/image/upload/v1624346227/portfolio/dark_l5msvo.png',
-        },
-        {
-          id: shortId.generate(),
-          src: 'https://res.cloudinary.com/limu/image/upload/v1623320474/portfolio/sidebar_er45zx.png',
-        },
-      ],
-      createdAt: {},
-      Comments: [
-        {
-          id: shortId.generate(),
-          User: {
-            id: shortId.generate(),
-            nickname: 'hero',
-          },
-          content: '하이루~',
-        },
-        {
-          id: shortId.generate(),
-          User: {
-            id: shortId.generate(),
-            nickname: '멸망',
-          },
-          content: '멸망이다~',
-        },
-      ],
-    },
-  ],
+  mainPosts: [],
   imagePaths: [],
+  hasMorePosts: true,
+  isLoadedPosts: false,
+  isLoadingPosts: false,
+  isLoadingPostsError: null,
   postAdded: false,
   isAddingPost: false,
   isAddingPostError: null,
@@ -59,14 +21,14 @@ export const initialState = {
   isAddingCommentError: null,
 };
 
-initialState.mainPosts = initialState.mainPosts.concat(
-  Array(20)
+export const generateDummyPost = (number) =>
+  Array(number)
     .fill()
     .map(() => ({
       id: shortId.generate(),
       Images: [
         {
-          src: faker.image.imageUrl(),
+          src: faker.image.image(),
         },
       ],
       Comments: [
@@ -84,8 +46,7 @@ initialState.mainPosts = initialState.mainPosts.concat(
         nickname: faker.name.findName(),
       },
       content: faker.lorem.paragraph(),
-    }))
-);
+    }));
 
 const dummyPost = (data) => ({
   id: data.id,
@@ -110,6 +71,21 @@ const dummyComment = (text) => ({
 const post_reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      case actions.LOAD_POSTS_REQUEST:
+        draft.isLoadingPosts = true;
+        draft.isLoadedPosts = false;
+        draft.isLoadingPostsError = null;
+        break;
+      case actions.LOAD_POSTS_SUCCESS:
+        draft.isLoadedPosts = true;
+        draft.isLoadingPosts = false;
+        draft.mainPosts = action.data.concat(draft.mainPosts);
+        draft.hasMorePosts = draft.mainPosts.length < 50;
+        break;
+      case actions.LOAD_POSTS_FAILURE:
+        draft.isLoadingPosts = false;
+        draft.isLoadingPostsError = action.error;
+        break;
       case actions.ADD_POST_REQUEST:
         draft.isAddingPost = true;
         draft.postAdded = false;
