@@ -86,6 +86,46 @@ function* changeNickname(action) {
   }
 }
 
+function followAPI(data) {
+  return axios.post(`/api/post/${data.postId}/comment`, data);
+}
+
+function* follow(action) {
+  try {
+    // const result = yield call(addCommentAPI, action.payload);
+    yield delay(1000);
+    yield put({
+      type: actions.FOLLOW_SUCCESS,
+      data: action.payload,
+    });
+  } catch (err) {
+    yield put({
+      type: actions.FOLLOW_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function unfollowAPI(data) {
+  return axios.post(`/api/post/${data.postId}/comment`, data);
+}
+
+function* unfollow(action) {
+  try {
+    // const result = yield call(addCommentAPI, action.payload);
+    yield delay(1000);
+    yield put({
+      type: actions.UNFOLLOW_SUCCESS,
+      data: action.payload,
+    });
+  } catch (err) {
+    yield put({
+      type: actions.UNFOLLOW_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function* watchLogin() {
   yield takeLatest(actions.LOGIN_REQUEST, login);
 }
@@ -102,11 +142,21 @@ function* watchChangeNickname() {
   yield takeLatest(actions.SIGNUP_REQUEST, changeNickname);
 }
 
+function* watchFollow() {
+  yield takeLatest(actions.FOLLOW_REQUEST, follow);
+}
+
+function* watchUnfollow() {
+  yield takeLatest(actions.UNFOLLOW_REQUEST, unfollow);
+}
+
 export default function* userSaga() {
   yield all([
     fork(watchLogin),
     fork(watchLogout),
     fork(watchSignUp),
     fork(watchChangeNickname),
+    fork(watchFollow),
+    fork(watchUnfollow),
   ]);
 }

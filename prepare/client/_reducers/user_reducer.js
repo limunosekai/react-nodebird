@@ -13,6 +13,12 @@ export const initialState = {
   isChangingNickname: false, // 닉네임 변경 시도중
   isChangingNicknameError: null, // 닉네임 변경 실패
   isChangedNickname: false, // 닉네임 변경 완료
+  followLoading: false, // 팔로우 시도중
+  followDone: false,
+  followError: null,
+  unfollowLoading: false, // 언팔로우 시도중
+  unfollowDone: false,
+  unfollowError: null,
   me: null,
   signupData: {},
   loginData: {},
@@ -23,7 +29,10 @@ const dummyUser = (data) => ({
   nickname: 'limu',
   id: 1,
   Posts: [{ id: 1 }],
-  Followings: [{ nickname: '뚜비' }, { nickname: '보라돌이' }],
+  Followings: [
+    { id: 2, nickname: '뚜비' },
+    { id: 3, nickname: '보라돌이' },
+  ],
   Followers: [{ nickname: '뚜비' }, { nickname: '보라돌이' }],
 });
 
@@ -70,6 +79,36 @@ const user_reducer = (state = initialState, action) => {
       case actions.SIGNUP_FAILURE:
         draft.isSigningUp = false;
         draft.isSigningUpError = action.error;
+        break;
+      case actions.FOLLOW_REQUEST:
+        draft.followLoading = true;
+        draft.followDone = false;
+        draft.followError = null;
+        break;
+      case actions.FOLLOW_SUCCESS:
+        draft.followLoading = false;
+        draft.followDone = true;
+        draft.me.Followings.push({ id: action.data });
+        break;
+      case actions.FOLLOW_FAILURE:
+        draft.followLoading = false;
+        draft.followError = action.error;
+        break;
+      case actions.UNFOLLOW_REQUEST:
+        draft.unfollowLoading = true;
+        draft.unfollowDone = false;
+        draft.unfollowError = null;
+        break;
+      case actions.UNFOLLOW_SUCCESS:
+        draft.unfollowLoading = false;
+        draft.unfollowDone = true;
+        draft.me.Followings = draft.me.Followings.filter(
+          (v) => v.id !== action.data
+        );
+        break;
+      case actions.UNFOLLOW_FAILURE:
+        draft.unfollowLoading = false;
+        draft.unfollowError = action.error;
         break;
       case actions.CHANGE_NICKNAME_REQUEST:
         draft.isChangedNickname = false;

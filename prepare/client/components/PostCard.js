@@ -13,6 +13,7 @@ import PostImages from './PostImages';
 import CommentForm from './CommentForm';
 import PostCardContent from './PostCardContent';
 import { removePostRequest } from '../_actions/post_actions';
+import FollowButton from './FollowButton';
 
 const { Meta } = Card;
 
@@ -80,6 +81,7 @@ const PostCard = ({ post }) => {
             <EllipsisOutlined />
           </Popover>,
         ]}
+        extra={id && <FollowButton post={post} />}
       >
         <Meta
           description={<PostCardContent postData={post?.content} />}
